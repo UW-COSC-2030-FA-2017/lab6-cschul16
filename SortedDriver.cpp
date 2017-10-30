@@ -3,7 +3,8 @@
 // tom bailey   1445  25 mar 2014
 // Construct sorted sequences and call functions that 
 //   process the sorted sequences.
-
+// Edited by: Chris Schultz
+// Date: 30 October 2017
 
 #include "RandomUtilities.h"
 #include "ContainerPrinting.h"
@@ -56,26 +57,63 @@ getWords(size_t numWords, size_t wordLength, string alphabet)
 	return theWords;
 }
 
+// finds the most isolated number in a vector (furthest distance between values)
+// COME BACK TO ME -- works in PDF examples but not in other tests?
+double mostIsolated(vector<double> & number) {
+	double diff, diffL, diffR, tempIso;
+	int size = number.size();
 
-// pre:  number is not empty; 
-//       number is sorted from smallest to largest
-// post: The most isolated entry in number has been returned
-double
-mostIsolated(vector<double> & number)
-{
-	// STUB  STUB  STUB
-	return -123.456;
+	// loop to test the differences on either side of the vector value
+	for (int i = 0; i < size; i++) {
+		// special case for beginning of the loop
+		if (i == 0){
+			diffR = abs(number[i + 1] - number[i]);
+			diff = diffL = diffR;
+		}
+		// if it is not at the beginning or the end
+		else if (i > 0 && i != size - 1) {
+			diffR = abs(number[i + 1] - number[i]);
+			if (diffL > diff && diffR > diff) {
+				if (diffL <= diffR) {
+					diff = diffL;
+				}
+				else {
+					diff = diffR;
+				}
+				tempIso = number[i];
+			}
+			diffL = diffR;
+		}
+		// if it is at the end
+		else if (i == size - 1) {
+			if (diffL > diff)
+			{
+				tempIso = number[i];
+			}
+		}
+	}
+	return tempIso;
 }
 
-
-// pre:  A and B are sorted.
-// post: The number of strings in A that do not occur in B
-//         has been returned.
-int
-unmatched(list<string> & A, list<string> & B)
-{
-	// STUB  STUB  STUB
-	return -1;
+// compare strings to finds words in string A that are not in string B
+// determines how many are the same, and then subtracts that from the total
+int unmatched(list<string> & A, list<string> & B) {
+	int same = 0;
+	std::list<string>::iterator itA = A.begin();
+	std::list<string>::iterator itB = B.begin();
+	while (itA != A.end() && itB != B.end()) {
+		if (*itA == *itB) {
+			itA++;
+			same++;
+		}
+		else if (*itA > *itB) {
+			*itB++;
+		}
+		else {
+			*itA++;
+		}
+	}
+	return A.size() - same;
 }
 
 
